@@ -1,0 +1,24 @@
+/* The :root CSS pseudo-class matches the root 
+element of a tree representing the document.
+ In HTML, :root represents the <html> element and 
+ is identical to the selector html, except that 
+ its specificity is higher. */
+
+:root {
+    --box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24); 
+}
+
+*{
+    box-sizing: border-box;
+}
+
+body{
+    background-color: bisque;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    min-height: 100vh;
+    margin: 0;
+    font-family: "Graduate", serif;
+}
