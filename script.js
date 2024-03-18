@@ -43,20 +43,79 @@ function addTransactionDOM(transaction) {
 
     item.classList.add(transaction.amount < 0 ? "minus" : "plus");
     item.innerHTML = `
-        ${transaction.text}<span>${sign}₹${Math.abs(transaction.amount)}</span>
-        <button class="delete-btn" onclick="removeTransaction(${transaction.id})">
-            <i class="fa-solid fa-xmark"></i>
-        </button>
+        <div class="transaction-details">
+            <span>${transaction.text}</span>
+            <span>${sign}₹${Math.abs(transaction.amount)}</span>
+        </div>
+        <div class="transaction-actions">
+            <button class="edit-btn"><i class="fa-regular fa-pen-to-square"></i></button>
+            <button class="delete-btn"><i class="fa-solid fa-xmark"></i></button>
+        </div>
     `;
+
+    const editButton = item.querySelector(".edit-btn");
+    const deleteButton = item.querySelector(".delete-btn");
+
+    editButton.addEventListener("click", () => editTransaction(transaction.id));
+    deleteButton.addEventListener("click", () => removeTransaction(transaction.id));
 
     list.appendChild(item);
 }
+
 //remove Transaction 
 function removeTransaction(id){
     transactions = transactions.filter(transaction => transaction.id !== id);
     updateLocalStorage();
     init();
 }
+
+function editTransaction(id) {
+    const transactionIndex = transactions.findIndex(transaction => transaction.id === id);
+    const transaction = transactions[transactionIndex];
+
+    const item = list.childNodes[transactionIndex]; // Get the list item corresponding to the transaction
+
+    const transactionDetails = item.querySelector(".transaction-details");
+    const transactionActions = item.querySelector(".transaction-actions");
+
+    const textSpan = transactionDetails.querySelector("span:first-child");
+    const amountSpan = transactionDetails.querySelector("span:last-child");
+
+    const textValue = textSpan.textContent;
+    const amountValue = parseFloat(amountSpan.textContent.replace("₹", "").replace("-", ""));
+
+    // Create form elements for editing
+    const editForm = document.createElement("form");
+    editForm.innerHTML = `
+        <input type="text" value="${textValue}">
+        <input type="number" value="${amountValue}">
+        <button type="submit">Save</button>
+    `;
+
+    // Replace transaction details with form
+    transactionDetails.innerHTML = "";
+    transactionDetails.appendChild(editForm);
+    transactionActions.style.display = "none"; // Hide action buttons temporarily
+
+    // Handle form submission
+    editForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+
+        const newText = editForm.querySelector("input[type='text']").value;
+        const newAmount = parseFloat(editForm.querySelector("input[type='number']").value);
+
+        if (newText.trim() !== "" && !isNaN(newAmount)) {
+            transactions[transactionIndex].text = newText;
+            transactions[transactionIndex].amount = newAmount;
+
+            updateLocalStorage();
+            init(); // Re-render transactions
+        } else {
+            alert("Please enter valid text and amount.");
+        }
+    });
+}
+
 
 
 // Update the balance, income, and expense
