@@ -29,6 +29,12 @@ body{
 
 }
 h1{
+    font-size: 5rem;
+    letter-spacing: 1px;
+    margin-top: 3%;
+}
+#balance{
+    font-size: 2rem;
     letter-spacing: 1px;
     margin-top: 3%;
 }
